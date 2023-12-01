@@ -78,73 +78,67 @@ class _ListaComprasState extends State<ListaCompras> {
       child: ListView.builder(
         itemCount: items.length,
         itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color:  Colors.white,
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Dismissible(
-                key: UniqueKey(),
-                onDismissed: (direction) {
-                  _removeItem(index);
+          return Dismissible(
+            key: UniqueKey(),
+            onDismissed: (direction) {
+              _removeItem(index);
+            },
+            background: Container(
+              color: Colors.red,
+              child: Icon(Icons.delete, color: Colors.black),
+              alignment: Alignment.centerRight,
+              padding: EdgeInsets.only(right: 20.0),
+            ),
+            child: Card(
+              margin: EdgeInsets.symmetric(horizontal: 18.0, vertical: 8.0),
+              child: ListTile(
+                onTap: () {
+                  setState(() {
+                    selectedItemIndex = index;
+                    itemNameController.text = items[index].name;
+                    itemValueController.text = items[index].value.toString();
+                  });
                 },
-                background: Container(
-                  color: Colors.red,
-                  child: Icon(Icons.delete, color: Colors.black),
-                  alignment: Alignment.centerRight,
-                  padding: EdgeInsets.only(right: 20.0),
-                ),
-                child: ListTile(
-                  onTap: () {
-                    setState(() {
-                      selectedItemIndex = index;
-                      itemNameController.text = items[index].name;
-                      itemValueController.text = items[index].value.toString();
-                    });
+                leading: Checkbox(
+                  value: items[index].isComplete,
+                  onChanged: (newValue) {
+                    _toggleItem(index);
                   },
-                  leading: Checkbox(
-                    value: items[index].isComplete,
-                    onChanged: (newValue) {
-                      _toggleItem(index);
-                    },
-                    activeColor: Colors.blue,
-                  ),
-                  title: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          items[index].name,
-                          style: TextStyle(
-                            decoration: items[index].isComplete ? TextDecoration.lineThrough : TextDecoration.none,
-                          ),
+                  activeColor: Colors.blue,
+                ),
+                title: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        items[index].name,
+                        style: TextStyle(
+                          decoration: items[index].isComplete ? TextDecoration.lineThrough : TextDecoration.none,
                         ),
                       ),
-                      Row(
-                        children: [
-                          IconButton(
-                            icon: Icon(Icons.remove),
-                            onPressed: () {
-                              _decrementQuantity(index);
-                            },
-                          ),
-                          Text(
-                            items[index].quantity.toString(),
-                            style: TextStyle(fontSize: 18),
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.add),
-                            onPressed: () {
-                              _incrementQuantity(index);
-                            },
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  subtitle: Text('Valor: ${_formatCurrency(items[index].value)}'),
+                    ),
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.remove),
+                          onPressed: () {
+                            _decrementQuantity(index);
+                          },
+                        ),
+                        Text(
+                          items[index].quantity.toString(),
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.add),
+                          onPressed: () {
+                            _incrementQuantity(index);
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
+                subtitle: Text('Valor: ${_formatCurrency(items[index].value)}'),
               ),
             ),
           );
@@ -315,7 +309,7 @@ class ShoppingItem {
   Map<String, dynamic> toJson() {
     return {
       'name': name,
-      'value': value,
+      'value': value.toString(),
       'isComplete': isComplete,
       'quantity': quantity,
     };
@@ -324,7 +318,7 @@ class ShoppingItem {
   factory ShoppingItem.fromJson(Map<String, dynamic> json) {
     return ShoppingItem(
       name: json['name'],
-      value: json['value'],
+      value: double.parse(json['value']),
       isComplete: json['isComplete'],
       quantity: json['quantity'],
     );

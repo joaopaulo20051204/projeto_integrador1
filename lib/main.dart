@@ -113,42 +113,34 @@ class _ListaComprasInicialState extends State<ListaComprasInicial> {
           ),
         ],
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/fundo.png'), 
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                itemCount: lists.length,
-                itemBuilder: (context, index) {
-                  return Dismissible(
-                    key: UniqueKey(),
-                    onDismissed: (direction) {
-                      _removeList(index);
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: lists.length,
+              itemBuilder: (context, index) {
+                return Dismissible(
+                  key: UniqueKey(),
+                  onDismissed: (direction) {
+                    _removeList(index);
+                  },
+                  background: Container(
+                    color: Colors.red,
+                    child: Icon(Icons.delete, color: Colors.black),
+                    alignment: Alignment.centerRight,
+                    padding: EdgeInsets.only(right: 20.0),
+                  ),
+                  child: ListTile(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/detalhesLista', arguments: lists[index]);
                     },
-                    background: Container(
-                      color: Colors.red,
-                      child: Icon(Icons.delete, color: Colors.black),
-                      alignment: Alignment.centerRight,
-                      padding: EdgeInsets.only(right: 15.0),
-                    ),
-                    child: ListTile(
-                      onTap: () {
-                        Navigator.pushNamed(context, '/detalhesLista', arguments: lists[index]);
-                      },
-                      title: Text(lists[index].name),
-                    ),
-                  );
-                },
-              ),
+                    title: Text(lists[index].name),
+                  ),
+                );
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -189,7 +181,7 @@ class _ListaComprasInicialState extends State<ListaComprasInicial> {
                 ),
               ),
             ),
-            SizedBox(height: 19.0),
+            SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () {
                 _addList(newListName);
